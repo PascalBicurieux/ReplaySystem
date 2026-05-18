@@ -152,7 +152,7 @@ namespace ReplaySystem.Recording
         private IEnumerator<float> RecordLoop()
         {
             const float dt = 1f / 30f;
-            while (IsRecording && _target != null && _target.IsConnected && _target.IsAlive)
+            while (IsRecording && _target != null && _target.IsConnected)
             {
                 var frame = new RecordedFrame
                 {

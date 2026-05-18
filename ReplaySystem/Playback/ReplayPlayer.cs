@@ -388,6 +388,11 @@ namespace ReplaySystem.Playback
         private void ApplyDeath(RecordedDeath ev)
         {
             if (_dummy == null || !_dummy.IsConnected) return;
+            if (!_dummy.IsAlive)
+            {
+                Log.Debug($"[ReplaySystem][Play] ApplyDeath skipped (dummy already dead)");
+                return;
+            }
             try
             {
                 _dummy.IsGodModeEnabled = false;
@@ -565,8 +570,13 @@ namespace ReplaySystem.Playback
                 try
                 {
                     var newRole = (PlayerRoles.RoleTypeId)f.CurrentRole;
+                    bool wasDead = !npc.IsAlive;
                     npc.Role.Set(newRole);
                     Log.Info($"[ReplaySystem][Play] Dummy role change → {newRole}");
+                    if (wasDead && npc.IsAlive)
+                    {
+                        try { npc.IsGodModeEnabled = true; } catch { }
+                    }
                 }
                 catch (Exception e) { Log.Warn($"[ReplaySystem][Play] Role change failed: {e.Message}"); }
             }
